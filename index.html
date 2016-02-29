@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/angular.min.js"></script>
+    <script src="js/app.js"></script>
+    <title>One day schedule</title>
+  </head>
+  <body>
+    <div id="wrapper" class="container-fluid" ng-app="scheduleApp" ng-controller="scheduleCtrl">
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              <p class="panel-title text-center">Планировщик</p>
+            </div>
+            <div class="panel-body">
+              <form id="schedule-form" name="scheduleForm" novalidate ng-submit="formSubmit()">
+                <div class="timer-content form-group">
+                  <div class="timers">
+                    <div class="timer-item">
+                      <div class="selectors">
+                        <select class="form-control" ng-model="timerHoursFromSelected" ng-options="item.display for item in timerHoursFrom track by item.value"></select> : 
+                        <select class="form-control" ng-model="timerMinutesFromSelected" ng-options="item.display for item in timerMinutesFrom track by item.value"></select>
+                      </div>
+                      <div class="timer-label">
+                        <strong>с:</strong>
+                      </div>
+                    </div>
+                    <div class="timer-item">
+                      <div class="selectors">
+                        <select class="form-control" ng-model="timerHoursToSelected" ng-options="item.display for item in timerHoursTo track by item.value"></select> : 
+                        <select class="form-control" ng-model="timerMinutesToSelected" ng-options="item.display for item in timerMinutesTo track by item.value"></select>
+                      </div>
+                      <div class="timer-label">
+                        <strong>до:</strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div id="task-description" class="form-group">
+                  <label for="taskDescription" class="control-label">Описание задачи:</label>
+                  <textarea id="taskDescription" class="form-control" name="taskDescription" ng-model="taskDescription" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-success center-block" ng-disabled="scheduleForm.$invalid">Добавить</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-8">
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              <p class="panel-title text-center">Запланированные задания</p>
+            </div>
+            <div class="panel-body">
+              <p class="text-center" ng-if="!tasks.length">У вас нет запланированных заданий!</p>
+              <table class="table table-bordered" ng-if="tasks.length">
+                <tr ng-repeat="task in tasks">
+                  <td>{{task.hourFrom}}:{{(task.minuteFrom < 10) ? '0' + task.minuteFrom : task.minuteFrom}} - {{task.hourTo}}:{{(task.minuteTo < 10) ? '0' + task.minuteTo : task.minuteTo}}</td>
+                  <td>{{task.description}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

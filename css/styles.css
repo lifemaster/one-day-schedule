@@ -1,0 +1,53 @@
+@import "bootstrap.css";
+#wrapper {
+  min-width: 320px;
+  max-width: 1440px;
+  padding: 10px;
+}
+#schedule-form .timer-content {
+  text-align: center;
+}
+#schedule-form .timer-content .timers {
+  display: inline-block;
+}
+#schedule-form .timer-content .timers .timer-item {
+  overflow: hidden;
+}
+#schedule-form .timer-content .timers .timer-item:first-child {
+  margin-bottom: 10px;
+}
+#schedule-form .timer-content .timers .timer-item .selectors {
+  float: right;
+  margin-left: 10px;
+}
+#schedule-form .timer-content .timers .timer-item .selectors select {
+  display: inline;
+  width: auto;
+  height: 50px;
+  cursor: pointer;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  font-size: 24px;
+}
+#schedule-form .timer-content .timers .timer-item .timer-label {
+  float: right;
+  font-size: 18px;
+  line-height: 50px;
+}
+#schedule-form #task-description label {
+  display: block;
+  font-size: 18px;
+  text-align: center;
+}
+#schedule-form #task-description textarea {
+  height: 150px;
+  resize: none;
+}
+table {
+  margin-bottom: 0 !important;
+}
+table td:first-child {
+  width: 120px;
+  text-align: center;
+  vertical-align: middle !important;
+}
