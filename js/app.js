@@ -1,19 +1,38 @@
+function rand(a, b) {
+  return Math.round(a + (b - a) * Math.random());
+}
+
+function createHash(count) {
+  var arr = [0,1,2,3,4,5,6,7,8,9,'a','b','c','d'];
+  var hash = '';
+  for(var i=0; i<=count; i++) {
+    hash += arr[rand(0, arr.length - 1)];
+  }
+  return hash;
+}
+
+// ---------------------------------------------------------------------
+//                     Begin Angular Application
+// ---------------------------------------------------------------------
+
 // Model
 var scheduleModel = {
   addTask: function(taskObject) {
-    if('oneDayScheduleTasks' in localStorage) {
-      var data = JSON.parse(localStorage.getItem('oneDayScheduleTasks'));
-      data.push(taskObject);
-      localStorage.setItem('oneDayScheduleTasks', JSON.stringify(data));
-    }
-    else {
-      var data = [];
-      data.push(taskObject);
-      localStorage.setItem('oneDayScheduleTasks', JSON.stringify(data));
-    }
+    var data = this.getTasks();
+    data.push(taskObject);
+    localStorage.setItem('oneDayScheduleTasks', JSON.stringify(data));
   },
   getTasks: function() {
-    return JSON.parse(localStorage.getItem('oneDayScheduleTasks'));
+    return JSON.parse(localStorage.getItem('oneDayScheduleTasks')) || [];
+  },
+  removeTask: function(hash) {
+    var data = this.getTasks();
+    for(var i=0; i<data.length; i++) {
+      if(data[i].hash === hash) {
+        data.splice(i, 1);
+      }
+    }
+    localStorage.setItem('oneDayScheduleTasks', JSON.stringify(data));
   }
 };
 
@@ -57,37 +76,83 @@ angular
   $scope.timerHoursToSelected     = $scope.timerHoursTo[8];
   $scope.timerMinutesToSelected   = $scope.timerMinutesTo[0];
 
-  // existing tasks
-  $scope.tasks = scheduleModel.getTasks();
+  // prepare array of objects tasks data for view
+  function transformTasksDataForView() {
+    var modelData = scheduleModel.getTasks();
+    var tasksDataForView = [];
+
+    for(var i=0; i<modelData.length; i++) {
+      var hourFrom    = Math.floor(modelData[i].beginOfMinutes / 60);
+      var minuteFrom  = modelData[i].beginOfMinutes % 60;
+      var hourTo      = Math.floor(modelData[i].endOfMinutes / 60);
+      var minuteTo    = modelData[i].endOfMinutes % 60;
+
+      tasksDataForView.push({
+        hash:        modelData[i].hash,
+        hourFrom:    hourFrom,
+        minuteFrom: (minuteFrom < 10) ? ('0' + minuteFrom) :  minuteFrom,
+        hourTo:      hourTo,
+        minuteTo:   (minuteTo   < 10) ? ('0' + minuteTo)   :  minuteTo,
+        description: modelData[i].description
+      });
+    }
+    return tasksDataForView;
+  }
+
+  // add existing tasks to scope
+  $scope.tasks = transformTasksDataForView();
 
   // -----------------------------------------------------------
   //                         Behaviors
   // -----------------------------------------------------------
 
   $scope.formSubmit = function() {
-    // timers data
-    var timerHoursFromSelected    = $scope.timerHoursFromSelected;
-    var timerMinutesFromSelected  = $scope.timerMinutesFromSelected;
-    var timerHoursToSelected      = $scope.timerHoursToSelected;
-    var timerMinutesToSelected    = $scope.timerMinutesToSelected
-    var taskDescription           = $scope.taskDescription;
+    
+    // timer form data
+    var hourFrom        = $scope.timerHoursFromSelected.value;
+    var minuteFrom      = $scope.timerMinutesFromSelected.value;
+    var hourTo          = $scope.timerHoursToSelected.value;
+    var minuteTo        = $scope.timerMinutesToSelected.value;
+    var taskDescription = $scope.taskDescription;
 
+    // prepare time range for delivery to model
+    var beginOfMinutes  = hourFrom * 60 + minuteFrom;
+    var endOfMinutes    = hourTo   * 60 + minuteTo;
+
+    // delivery data to model
     scheduleModel.addTask({
-      hourFrom:     timerHoursFromSelected.value,
-      minuteFrom:   timerMinutesFromSelected.value,
-      hourTo:       timerHoursToSelected.value,
-      minuteTo:     timerMinutesToSelected.value,
-      description:  taskDescription
+      hash:           createHash(10),
+      beginOfMinutes: beginOfMinutes,
+      endOfMinutes:   endOfMinutes,
+      description:    taskDescription
     });
 
     // update tasks list in scope
-    $scope.tasks = scheduleModel.getTasks();
+    $scope.tasks = transformTasksDataForView();
 
     // reset task description
     $scope.taskDescription = '';
   }
 
-  // taskObject format:
-  // { hourFrom: 7, minuteFrom: 0, hourTo: 7, minuteTo: 15, description: 'something string' }
+  // taskObject format (for example):
+  // {
+  //   hash:            '72ac1755763',
+  //   beginOfMinutes:  420,
+  //   endOfMinutes:    435,
+  //   description:     'something string'
+  // }
+
+  $scope.removeTask = function(hash) {
+    if(confirm('Задача будет удалена!')) {
+      scheduleModel.removeTask(hash);
+
+      // update tasks list in scope
+      $scope.tasks = transformTasksDataForView();
+    }
+  } 
 
 });
+
+// ---------------------------------------------------------------------
+//                       End Angular Application
+// ---------------------------------------------------------------------

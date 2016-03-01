@@ -58,8 +58,11 @@
               <p class="text-center" ng-if="!tasks.length">У вас нет запланированных заданий!</p>
               <table class="table table-bordered" ng-if="tasks.length">
                 <tr ng-repeat="task in tasks">
-                  <td>{{task.hourFrom}}:{{(task.minuteFrom < 10) ? '0' + task.minuteFrom : task.minuteFrom}} - {{task.hourTo}}:{{(task.minuteTo < 10) ? '0' + task.minuteTo : task.minuteTo}}</td>
-                  <td>{{task.description}}</td>
+                  <td>{{task.hourFrom}}:{{task.minuteFrom}} - {{task.hourTo}}:{{task.minuteTo}}</td>
+                  <td>
+                    {{task.description}}
+                    <span class="glyphicon glyphicon-trash" title="Удалить задачу" ng-click="removeTask(task.hash)"></span>
+                  </td>
                 </tr>
               </table>
             </div>
