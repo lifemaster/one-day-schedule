@@ -52,6 +52,5 @@ table td:first-child {
   vertical-align: middle !important;
 }
 table td span.glyphicon {
-  margin-left: 10px;
   cursor: pointer;
 }
