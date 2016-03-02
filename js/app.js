@@ -102,17 +102,24 @@ angular
   }
 
   // validate time ranges
-  function validateTimeRange(beginOfMinutes, endOfMinutes) {
-    var planedTasks = scheduleModel.getTasks(); 
+  function isValidTimeRange(beginOfMinutes, endOfMinutes) {
+    if(beginOfMinutes >= endOfMinutes) {
+      $scope.showError = 'Укажите корректный диапазон времени!';
+      return false;
+    }
+    var planedTasks = scheduleModel.getTasks();
     for(var i=0; i<planedTasks.length; i++) {
 
       // invalid condition for add task
       var condition = beginOfMinutes >= planedTasks[i].beginOfMinutes
-        && beginOfMinutes <= planedTasks[i].endOfMinutes
+        && beginOfMinutes < planedTasks[i].endOfMinutes
         || endOfMinutes > planedTasks[i].beginOfMinutes
         && endOfMinutes <= planedTasks[i].endOfMinutes;
-        
-      if(condition) return false;
+
+      if(condition) {
+        $scope.showError = 'В этом диапазоне времени у Вас уже есть задачи!';
+        return false;
+      }
     }
     return true;
   }
@@ -139,7 +146,7 @@ angular
     var beginOfMinutes  = hourFrom * 60 + minuteFrom;
     var endOfMinutes    = hourTo   * 60 + minuteTo;
 
-  if(validateTimeRange(beginOfMinutes, endOfMinutes)) {
+  if(isValidTimeRange(beginOfMinutes, endOfMinutes)) {
       // delivery data to model
       scheduleModel.addTask({
         hash:           createHash(10),
@@ -154,9 +161,6 @@ angular
       // reset task description
       $scope.taskDescription = '';
    }
-    else {
-      $scope.showError = true;
-    }
   }
 
   // taskObject format (for example):
@@ -173,6 +177,10 @@ angular
 
       // update tasks list in scope
       $scope.tasks = transformTasksDataForView();
+
+      if($scope.showError === 'В этом диапазоне времени у Вас уже есть задачи!') {
+        $scope.showError = false;
+      }
     }
   } 
 

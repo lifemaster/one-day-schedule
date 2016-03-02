@@ -40,7 +40,9 @@
                     </div>
                   </div>
                 </div>
-                <p class="text-danger text-center" ng-if="showError">В этом диапазоне времени у Вас уже есть задачи!</p>
+                <div class="error text-danger text-center" ng-if="showError">
+                  <span>{{showError}}</span>
+                </div>
                 <div id="task-description" class="form-group">
                   <label for="taskDescription" class="control-label">Описание задачи:</label>
                   <textarea id="taskDescription" class="form-control" name="taskDescription" ng-model="taskDescription" required></textarea>
