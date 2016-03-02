@@ -78,7 +78,9 @@ angular
 
   // prepare array of objects tasks data for view
   function transformTasksDataForView() {
-    var modelData = scheduleModel.getTasks();
+    var modelData = scheduleModel.getTasks().sort(function(a, b) {
+      return a.beginOfMinutes - b.beginOfMinutes;
+    });
     var tasksDataForView = [];
 
     for(var i=0; i<modelData.length; i++) {
@@ -98,6 +100,24 @@ angular
     }
     return tasksDataForView;
   }
+
+  // validate time ranges
+  function validateTimeRange(beginOfMinutes, endOfMinutes) {
+    var planedTasks = scheduleModel.getTasks(); 
+    for(var i=0; i<planedTasks.length; i++) {
+
+      // invalid condition for add task
+      var condition = beginOfMinutes >= planedTasks[i].beginOfMinutes
+        && beginOfMinutes <= planedTasks[i].endOfMinutes
+        || endOfMinutes > planedTasks[i].beginOfMinutes
+        && endOfMinutes <= planedTasks[i].endOfMinutes;
+        
+      if(condition) return false;
+    }
+    return true;
+  }
+
+  $scope.showError = false;
 
   // add existing tasks to scope
   $scope.tasks = transformTasksDataForView();
@@ -119,19 +139,24 @@ angular
     var beginOfMinutes  = hourFrom * 60 + minuteFrom;
     var endOfMinutes    = hourTo   * 60 + minuteTo;
 
-    // delivery data to model
-    scheduleModel.addTask({
-      hash:           createHash(10),
-      beginOfMinutes: beginOfMinutes,
-      endOfMinutes:   endOfMinutes,
-      description:    taskDescription
-    });
+  if(validateTimeRange(beginOfMinutes, endOfMinutes)) {
+      // delivery data to model
+      scheduleModel.addTask({
+        hash:           createHash(10),
+        beginOfMinutes: beginOfMinutes,
+        endOfMinutes:   endOfMinutes,
+        description:    taskDescription
+      });
 
-    // update tasks list in scope
-    $scope.tasks = transformTasksDataForView();
+      // update tasks list in scope
+      $scope.tasks = transformTasksDataForView();
 
-    // reset task description
-    $scope.taskDescription = '';
+      // reset task description
+      $scope.taskDescription = '';
+   }
+    else {
+      $scope.showError = true;
+    }
   }
 
   // taskObject format (for example):

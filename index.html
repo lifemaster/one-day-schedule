@@ -22,8 +22,8 @@
                   <div class="timers">
                     <div class="timer-item">
                       <div class="selectors">
-                        <select class="form-control" ng-model="timerHoursFromSelected" ng-options="item.display for item in timerHoursFrom track by item.value"></select> : 
-                        <select class="form-control" ng-model="timerMinutesFromSelected" ng-options="item.display for item in timerMinutesFrom track by item.value"></select>
+                        <select class="form-control" ng-model="timerHoursFromSelected" ng-click="showError = false" ng-options="item.display for item in timerHoursFrom track by item.value"></select> : 
+                        <select class="form-control" ng-model="timerMinutesFromSelected" ng-click="showError = false" ng-options="item.display for item in timerMinutesFrom track by item.value"></select>
                       </div>
                       <div class="timer-label">
                         <strong>с:</strong>
@@ -31,8 +31,8 @@
                     </div>
                     <div class="timer-item">
                       <div class="selectors">
-                        <select class="form-control" ng-model="timerHoursToSelected" ng-options="item.display for item in timerHoursTo track by item.value"></select> : 
-                        <select class="form-control" ng-model="timerMinutesToSelected" ng-options="item.display for item in timerMinutesTo track by item.value"></select>
+                        <select class="form-control" ng-model="timerHoursToSelected" ng-click="showError = false" ng-options="item.display for item in timerHoursTo track by item.value"></select> : 
+                        <select class="form-control" ng-model="timerMinutesToSelected" ng-click="showError = false" ng-options="item.display for item in timerMinutesTo track by item.value"></select>
                       </div>
                       <div class="timer-label">
                         <strong>до:</strong>
@@ -40,6 +40,7 @@
                     </div>
                   </div>
                 </div>
+                <p class="text-danger text-center" ng-if="showError">В этом диапазоне времени у Вас уже есть задачи!</p>
                 <div id="task-description" class="form-group">
                   <label for="taskDescription" class="control-label">Описание задачи:</label>
                   <textarea id="taskDescription" class="form-control" name="taskDescription" ng-model="taskDescription" required></textarea>
