@@ -103,10 +103,16 @@ angular
 
   // validate time ranges
   function isValidTimeRange(beginOfMinutes, endOfMinutes) {
-    if(beginOfMinutes >= endOfMinutes) {
-      $scope.showError = 'Укажите корректный диапазон времени!';
+    if(beginOfMinutes > endOfMinutes && endOfMinutes != 0) {
+      $scope.showError = 'Укажите корректный интервал времени!';
       return false;
     }
+
+    if(beginOfMinutes == endOfMinutes) {
+      $scope.showError = 'Интервал времени не может составлять 0 минут!';
+      return false;
+    }
+
     var planedTasks = scheduleModel.getTasks();
     for(var i=0; i<planedTasks.length; i++) {
 
@@ -117,7 +123,7 @@ angular
         && endOfMinutes <= planedTasks[i].endOfMinutes;
 
       if(condition) {
-        $scope.showError = 'В этом диапазоне времени у Вас уже есть задачи!';
+        $scope.showError = 'В этом интервале времени у Вас уже есть задачи!';
         return false;
       }
     }
@@ -154,6 +160,13 @@ angular
         endOfMinutes:   endOfMinutes,
         description:    taskDescription
       });
+
+      // change timers value
+      $scope.timerHoursFromSelected   = $scope.timerHoursToSelected;
+      $scope.timerMinutesFromSelected = $scope.timerMinutesToSelected;
+
+      $scope.timerHoursToSelected = (hourTo === 23) ? $scope.timerHoursTo[0] : $scope.timerHoursTo[hourTo + 1];
+      $scope.timerMinutesToSelected = $scope.timerMinutesTo[0];
 
       // update tasks list in scope
       $scope.tasks = transformTasksDataForView();
