@@ -4,6 +4,10 @@
   max-width: 1440px;
   padding: 10px;
 }
+#wrapper .panel {
+  max-width: 650px;
+  margin: 0 auto;
+}
 #schedule-form .timer-content {
   text-align: center;
 }
@@ -42,9 +46,6 @@
 #schedule-form #task-description textarea {
   height: 150px;
   resize: none;
-}
-table {
-  margin-bottom: 0 !important;
 }
 table td:first-child {
   width: 110px;
